@@ -3,11 +3,14 @@
     import { getTimesheets, deleteTimesheet } from '../services/timesheetApi';
     import type { TimesheetEntry } from '../types/timesheet';
     import { useRouter } from 'vue-router'
+    import ConfirmModal from './ConfirmModal.vue'; 
   
     const router = useRouter()
     const loading = ref(true)
     const entries = ref<TimesheetEntry[]>([])
     const error = ref('')
+    const showModal = ref(false)
+    const entryToDelete = ref<number | null>(null)
 
     onMounted(async () => {
         try {
@@ -20,13 +23,27 @@
         }
     })
 
-    async function deleteEntry(id: number) {
-        try{
-            await deleteTimesheet(id);
-            entries.value = entries.value.filter(data => data.id != id)
-        } catch (e) {
-            error.value = 'Failed to delete entry. Please try again.'
+    function confirmDelete(id: number) {
+        entryToDelete.value = id
+        showModal.value = true
+    }
+
+    async function handleConfirmDelete() {
+        if (entryToDelete.value !== null) {
+            try {
+                await deleteTimesheet(entryToDelete.value)
+                entries.value = entries.value.filter(e => e.id !== entryToDelete.value)
+            } catch (e) {
+                error.value = 'Failed to delete entry. Please try again.'
+            }
         }
+        showModal.value = false
+        entryToDelete.value = null
+    }
+
+    function handleCancelDelete() {
+        showModal.value = false
+        entryToDelete.value = null
     }
 
     function editEntry(entry: TimesheetEntry) {
@@ -58,7 +75,7 @@
             <td>{{ entry.description }}</td>
             <td>
                 <button class="bg-blue-400 text-white m-1" @click=editEntry(entry)>Edit</button>
-                <button class="bg-red-400 text-white m-1" @click="deleteEntry(entry.id)">Delete</button>
+                <button class="bg-red-400 text-white m-1" @click="confirmDelete(entry.id)">Delete</button>
             </td>
         </tr>
     </table>
@@ -66,6 +83,14 @@
         <p class="text-black">No entries yet</p>
         <router-link class="text-black" to="/create">Create your first entry</router-link>
     </div>
+
+    <ConfirmModal 
+        :show="showModal"
+        title="Delete Entry"
+        message="Are you sure you want to delete this entry?"
+        @confirm="handleConfirmDelete"
+        @cancel="handleCancelDelete"
+    />
   </template>
   
   <style scoped>
