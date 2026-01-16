@@ -5,6 +5,11 @@ export async function getTimesheets() {
     return res.json();
 }
 
+export async function getTimesheet(id: number) {
+    const res = await fetch(`${BASE_URL}/${id}`);
+    return res.json();
+}
+
 export async function createTimesheet(data: any) {
     await fetch(BASE_URL,  {
         method: 'POST',

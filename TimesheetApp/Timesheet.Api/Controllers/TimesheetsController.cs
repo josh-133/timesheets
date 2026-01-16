@@ -18,7 +18,7 @@ public class TimesheetsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<TimesheetDto>> Get()
+    public async Task<IEnumerable<TimesheetDto>> GetAll()
     {
         return await _db.TimesheetEntries
             .Select(e => new TimesheetDto
@@ -29,6 +29,22 @@ public class TimesheetsController : ControllerBase
                 Description = e.Description
             })
             .ToListAsync();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        var entry = await _db.TimesheetEntries.FindAsync(id);
+        if (entry == null)
+            return NotFound();
+
+        return Ok(new TimesheetDto
+        {
+            Id = entry.Id,
+            Date = entry.Date,
+            Hours = entry.Hours,
+            Description = entry.Description
+        });
     }
 
     [HttpPost]
@@ -44,7 +60,7 @@ public class TimesheetsController : ControllerBase
         _db.TimesheetEntries.Add(entry);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(Get), new { id = entry.Id }, entry);
+        return CreatedAtAction(nameof(GetAll), new { id = entry.Id }, entry);
     }
 
     [HttpPut("{id}")]
