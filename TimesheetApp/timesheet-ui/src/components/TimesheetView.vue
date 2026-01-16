@@ -4,16 +4,29 @@
     import type { TimesheetEntry } from '../types/timesheet';
     import { useRouter } from 'vue-router'
   
-    const router = useRouter();
+    const router = useRouter()
+    const loading = ref(true)
     const entries = ref<TimesheetEntry[]>([])
+    const error = ref('')
 
     onMounted(async () => {
-      entries.value = await getTimesheets()
+        try {
+            loading.value = true
+            entries.value = await getTimesheets()
+        } catch (e) {
+            error.value = 'Failed to load entries. Please try again.'
+        } finally {
+            loading.value = false
+        }
     })
 
     async function deleteEntry(id: number) {
-        await deleteTimesheet(id);
-        entries.value = entries.value.filter(data => data.id != id)
+        try{
+            await deleteTimesheet(id);
+            entries.value = entries.value.filter(data => data.id != id)
+        } catch (e) {
+            error.value = 'Failed to delete entry. Please try again.'
+        }
     }
 
     function editEntry(entry: TimesheetEntry) {
@@ -24,7 +37,15 @@
   
   <template>
     <h2>Timesheet Entries</h2>
-    <table>
+    <div v-if="error" class="bg-red-100 text-red-700 p-4 rounded">
+        {{ error }}
+    </div>
+    <div v-if="loading" class="flex items-center justify-center gap-2 py-8">
+        <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+        <span>Loading...</span>
+    </div>
+
+    <table v-else-if="entries.length > 0">
         <tr>
             <th>Date</th>
             <th>Hours</th>
@@ -41,6 +62,10 @@
             </td>
         </tr>
     </table>
+    <div v-else>
+        <p class="text-black">No entries yet</p>
+        <router-link class="text-black" to="/create">Create your first entry</router-link>
+    </div>
   </template>
   
   <style scoped>
