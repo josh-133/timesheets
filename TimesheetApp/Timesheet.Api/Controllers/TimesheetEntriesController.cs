@@ -8,20 +8,20 @@ namespace Timesheet.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TimesheetsController : ControllerBase
+public class TimesheetEntriesController : ControllerBase
 {
     private readonly TimesheetDbContext _db;
 
-    public TimesheetsController(TimesheetDbContext db)
+    public TimesheetEntriesController(TimesheetDbContext db)
     {
         _db = db;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<TimesheetDto>> GetAll()
+    public async Task<IEnumerable<TimesheetEntryDto>> GetAll()
     {
         return await _db.TimesheetEntries
-            .Select(e => new TimesheetDto
+            .Select(e => new TimesheetEntryDto
             {
                 Id = e.Id,
                 Date = e.Date,
@@ -38,7 +38,7 @@ public class TimesheetsController : ControllerBase
         if (entry == null)
             return NotFound();
 
-        return Ok(new TimesheetDto
+        return Ok(new TimesheetEntryDto
         {
             Id = entry.Id,
             Date = entry.Date,
@@ -48,7 +48,7 @@ public class TimesheetsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateTimesheetDto dto)
+    public async Task<IActionResult> Create(CreateTimesheetEntryDto dto)
     {
         var entry = new TimesheetEntry
         {
@@ -64,7 +64,7 @@ public class TimesheetsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateTimesheetDto timesheet)
+    public async Task<IActionResult> Update(int id, UpdateTimesheetEntryDto timesheet)
     {
         var entry = await _db.TimesheetEntries.FindAsync(id);
         if (entry == null)

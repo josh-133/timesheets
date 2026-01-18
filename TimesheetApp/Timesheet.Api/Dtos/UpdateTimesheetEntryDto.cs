@@ -1,6 +1,6 @@
 namespace Timesheet.Api.Dtos;
 
-public class CreateTimesheetDto
+public class UpdateTimesheetEntryDto
 {
     public DateOnly Date { get; set; }
     public decimal Hours { get; set; }

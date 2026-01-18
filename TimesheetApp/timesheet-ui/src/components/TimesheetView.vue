@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
-    import { getTimesheets, deleteTimesheet } from '../services/timesheetApi';
+    import { getTimesheetEntries, deleteTimesheetEntry } from '../services/timesheetApi';
     import type { TimesheetEntry } from '../types/timesheet';
     import { useRouter } from 'vue-router'
     import ConfirmModal from './ConfirmModal.vue'; 
@@ -15,7 +15,7 @@
     onMounted(async () => {
         try {
             loading.value = true
-            entries.value = await getTimesheets()
+            entries.value = await getTimesheetEntries()
         } catch (e) {
             error.value = 'Failed to load entries. Please try again.'
         } finally {
@@ -31,7 +31,7 @@
     async function handleConfirmDelete() {
         if (entryToDelete.value !== null) {
             try {
-                await deleteTimesheet(entryToDelete.value)
+                await deleteTimesheetEntry(entryToDelete.value)
                 entries.value = entries.value.filter(e => e.id !== entryToDelete.value)
             } catch (e) {
                 error.value = 'Failed to delete entry. Please try again.'

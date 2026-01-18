@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { getTimesheet, createTimesheet, updateTimesheet } from '../services/timesheetApi'
+  import { getTimesheetEntry, createTimesheetEntry, updateTimesheetEntry } from '../services/timesheetApi'
   import { ref } from 'vue'
   import { onMounted } from 'vue'
   import type { TimesheetEntry } from '../types/timesheet'
@@ -48,7 +48,7 @@
     if (route.params.id) {
       try {
         loading.value = true
-        entry.value = await getTimesheet(Number(route.params.id))
+        entry.value = await getTimesheetEntry(Number(route.params.id))
       } catch (e) {
         error.value = 'Failed to get entry. Please try again.'
       } finally { 
@@ -63,9 +63,9 @@
       saving.value = true
       try {
         if (isCreate) {
-          await createTimesheet(entry.value)
+          await createTimesheetEntry(entry.value)
         } else {
-          await updateTimesheet(entry.value.id, entry.value)
+          await updateTimesheetEntry(entry.value.id, entry.value)
         }
         router.push('/')
       } catch (e) {

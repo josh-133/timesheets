@@ -1,6 +1,6 @@
-const BASE_URL = 'http://localhost:5102/api/timesheets'
+const BASE_URL = 'http://localhost:5102/api/timesheetentries'
 
-export async function getTimesheets() {
+export async function getTimesheetEntries() {
     const res = await fetch(BASE_URL);
     if (!res.ok) {
         throw new Error('Failed to fetch timesheet entries')
@@ -8,7 +8,7 @@ export async function getTimesheets() {
     return res.json();
 }
 
-export async function getTimesheet(id: number) {
+export async function getTimesheetEntry(id: number) {
     const res = await fetch(`${BASE_URL}/${id}`);
     if (!res.ok) {
         throw new Error('Failed to fetch timesheet entry')
@@ -16,7 +16,7 @@ export async function getTimesheet(id: number) {
     return res.json();
 }
 
-export async function createTimesheet(data: any) {
+export async function createTimesheetEntry(data: any) {
     const res = await fetch(BASE_URL,  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -27,7 +27,7 @@ export async function createTimesheet(data: any) {
     }
 }
 
-export async function updateTimesheet(id: number, data: any) {
+export async function updateTimesheetEntry(id: number, data: any) {
     const res = await fetch(`${BASE_URL}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -38,7 +38,7 @@ export async function updateTimesheet(id: number, data: any) {
     }
 }
 
-export async function deleteTimesheet(id: number) {
+export async function deleteTimesheetEntry(id: number) {
     const res = await fetch(`${BASE_URL}/${id}`, {
         method: 'DELETE',
     });

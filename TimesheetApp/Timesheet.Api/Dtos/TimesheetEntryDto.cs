@@ -1,6 +1,6 @@
 namespace Timesheet.Api.Dtos;
 
-public class TimesheetDto
+public class TimesheetEntryDto
 {
     public int Id { get; set; }
     public DateOnly Date { get; set; }
