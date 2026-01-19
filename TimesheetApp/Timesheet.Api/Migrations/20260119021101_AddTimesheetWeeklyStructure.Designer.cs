@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Timesheet.Api.Data;
 
@@ -10,9 +11,11 @@ using Timesheet.Api.Data;
 namespace Timesheet.Api.Migrations
 {
     [DbContext(typeof(TimesheetDbContext))]
-    partial class TimesheetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260119021101_AddTimesheetWeeklyStructure")]
+    partial class AddTimesheetWeeklyStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
@@ -32,6 +35,9 @@ namespace Timesheet.Api.Migrations
 
                     b.Property<decimal>("Hours")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("TimesheetId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("WeeklyTimesheetId")
                         .HasColumnType("INTEGER");

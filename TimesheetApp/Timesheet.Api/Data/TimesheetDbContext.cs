@@ -10,5 +10,6 @@ public class TimesheetDbContext : DbContext
     {
     }
 
-public DbSet<TimesheetEntry> TimesheetEntries => Set<TimesheetEntry>();
+    public DbSet<TimesheetEntry> TimesheetEntries => Set<TimesheetEntry>();
+    public DbSet<WeeklyTimesheet> WeeklyTimesheets => Set<WeeklyTimesheet>();
 }
