@@ -17,7 +17,23 @@ table, tr, th, td {
 }
 
 button {
-  @apply cursor-pointer p-3 w-25 rounded-lg
+  @apply cursor-pointer rounded-lg
+}
+
+#app {
+  @apply w-full m-auto p-2;
+}
+
+body {
+  @apply m-0 flex items-start
+}
+
+.tooltip { 
+  @apply invisible absolute bottom-full left-1/2 -translate-x-1/2 translate-y-12  px-2 py-1 text-sm text-white bg-gray-800 rounded whitespace-nowrap opacity-0 transition-opacity duration-200 pointer-events-none;
+}
+
+.group:hover .tooltip {
+  @apply visible opacity-100;
 }
 
 :root {
@@ -43,13 +59,6 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -57,12 +66,6 @@ h1 {
 
 .card {
   padding: 2em;
-}
-
-#app {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 2rem;
 }
 
 @media (prefers-color-scheme: light) {

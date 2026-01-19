@@ -4,6 +4,7 @@
     import type { TimesheetEntry } from '../types/timesheet';
     import { useRouter } from 'vue-router'
     import ConfirmModal from './ConfirmModal.vue'; 
+    import { PencilIcon, TrashIcon } from '@heroicons/vue/16/solid';
   
     const router = useRouter()
     const loading = ref(true)
@@ -62,23 +63,31 @@
         <span>Loading...</span>
     </div>
 
-    <table v-else-if="entries.length > 0">
-        <tr>
-            <th>Date</th>
-            <th>Hours</th>
-            <th>Description</th>
-            <th>Options</th>
-        </tr>
-        <tr v-for="entry in entries" :key="entry.id">
-            <td>{{ entry.date }}</td>
-            <td>{{ entry.hours }}</td>
-            <td>{{ entry.description }}</td>
-            <td>
-                <button class="bg-blue-400 text-white m-1" @click=editEntry(entry)>Edit</button>
-                <button class="bg-red-400 text-white m-1" @click="confirmDelete(entry.id)">Delete</button>
-            </td>
-        </tr>
-    </table>
+    <div class="flex max-w-6xl mx-auto justify-center" v-else-if="entries.length > 0">
+        <table class="w-full">
+            <tr>
+                <th>Date</th>
+                <th>Hours</th>
+                <th>Description</th>
+                <th>Options</th>
+            </tr>
+            <tr v-for="entry in entries" :key="entry.id">
+                <td>{{ entry.date }}</td>
+                <td>{{ entry.hours }}</td>
+                <td>{{ entry.description }}</td>
+                <td>
+                    <button class="text-green-500 p-2 relative group" @click=editEntry(entry)>
+                        <PencilIcon class="h-5 w-5" />
+                        <span class="tooltip">Edit</span>
+                    </button>
+                    <button class="text-red-500 p-2 relative group" @click="confirmDelete(entry.id)">
+                        <TrashIcon class="h-5 w-5" />
+                        <span class="tooltip">Delete</span>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
     <div v-else>
         <p class="text-black">No entries yet</p>
         <router-link class="text-black" to="/create">Create your first entry</router-link>
@@ -93,6 +102,8 @@
     />
   </template>
   
-  <style scoped>
-  </style>
-  
+<style scoped>
+.tooltip {
+    transform: translateX(calc(-50% + 0.5rem)) translateY(0.5rem);
+}
+</style>
