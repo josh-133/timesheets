@@ -102,7 +102,7 @@
       <input v-model="entry.description" @input="errors.description=''" type="text" placeholder="Describe what you've done"/>
       <span class="text-red-500 text-sm">{{ errors.description }}</span>
     </div>
-    <button type="button" class="bg-black text-white m-1" :disabled="saving" @click.prevent="submit">{{ saving ? 'Saving...' : 'Submit' }}</button>
+    <button type="button" class="bg-black text-white m-1 p-2" :disabled="saving" @click.prevent="submit">{{ saving ? 'Saving...' : 'Submit' }}</button>
   </form>
 </template>
 

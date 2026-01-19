@@ -7,12 +7,12 @@ using Timesheet.Api.Models;
 namespace Timesheet.Api.Controllers;
 
 [ApiController]
-[Route("api[controller]")]
-public class WeeklyTimesheetController : ControllerBase
+[Route("api/[controller]")]
+public class WeeklyTimesheetsController : ControllerBase
 {
     private readonly TimesheetDbContext _db;
 
-    public WeeklyTimesheetController(TimesheetDbContext db)
+    public WeeklyTimesheetsController(TimesheetDbContext db)
     {
         _db = db;
     }

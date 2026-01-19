@@ -4,3 +4,9 @@ export interface TimesheetEntry {
     hours: number
     description: string
 }
+
+export interface WeeklyTimesheet {
+    id: number
+    weekStartDate: string
+    entries: TimesheetEntry[]
+}

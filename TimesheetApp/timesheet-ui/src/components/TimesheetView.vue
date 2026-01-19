@@ -1,13 +1,15 @@
 <script setup lang="ts">
     import { ref, onMounted } from 'vue';
-    import { getTimesheetEntries, deleteTimesheetEntry } from '../services/timesheetApi';
-    import type { TimesheetEntry } from '../types/timesheet';
-    import { useRouter } from 'vue-router'
+    import { getWeeklyTimesheet, deleteTimesheetEntry } from '../services/timesheetApi';
+    import type { TimesheetEntry, WeeklyTimesheet } from '../types/timesheet';
+    import { useRouter, useRoute } from 'vue-router'
     import ConfirmModal from './ConfirmModal.vue'; 
     import { PencilIcon, TrashIcon } from '@heroicons/vue/16/solid';
-  
+
     const router = useRouter()
+    const route = useRoute()
     const loading = ref(true)
+    const timesheet = ref<WeeklyTimesheet>()
     const entries = ref<TimesheetEntry[]>([])
     const error = ref('')
     const showModal = ref(false)
@@ -16,7 +18,8 @@
     onMounted(async () => {
         try {
             loading.value = true
-            entries.value = await getTimesheetEntries()
+            timesheet.value = await getWeeklyTimesheet(Number(route.params.id))
+            entries.value = timesheet.value.entries
         } catch (e) {
             error.value = 'Failed to load entries. Please try again.'
         } finally {
@@ -50,11 +53,14 @@
     function editEntry(entry: TimesheetEntry) {
         router.push(`/edit/${entry.id}`)
     }
-  
-  </script>
-  
-  <template>
-    <h2>Timesheet Entries</h2>
+
+</script>
+
+<template>
+    <router-link to="/" class="text-blue-500 hover:underline mb-4 inline-block">
+        ← Back to All Weeks
+    </router-link>
+    <h2>Week Starting {{ timesheet?.weekStartDate }} Entries</h2>
     <div v-if="error" class="bg-red-100 text-red-700 p-4 rounded">
         {{ error }}
     </div>
