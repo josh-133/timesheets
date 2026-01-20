@@ -25,6 +25,9 @@ public class TimesheetEntriesController : ControllerBase
             {
                 Id = e.Id,
                 Date = e.Date,
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                BreakTime = e.BreakTime,
                 Hours = e.Hours,
                 Description = e.Description,
                 WeeklyTimesheetId = e.WeeklyTimesheetId
@@ -43,6 +46,9 @@ public class TimesheetEntriesController : ControllerBase
         {
             Id = entry.Id,
             Date = entry.Date,
+            StartTime = entry.StartTime,
+            EndTime = entry.EndTime,
+            BreakTime = entry.BreakTime,
             Hours = entry.Hours,
             Description = entry.Description,
             WeeklyTimesheetId = entry.WeeklyTimesheetId
@@ -70,10 +76,14 @@ public class TimesheetEntriesController : ControllerBase
         var entry = new TimesheetEntry
         {
             Date = dto.Date,
-            Hours = dto.Hours,
+            StartTime = dto.StartTime,
+            EndTime = dto.EndTime,
+            BreakTime = dto.BreakTime,
             Description = dto.Description,
             WeeklyTimesheetId = weeklyTimesheet.Id
         };
+
+        entry.CalculateHours();
 
         _db.TimesheetEntries.Add(entry);
         await _db.SaveChangesAsync();
@@ -81,6 +91,9 @@ public class TimesheetEntriesController : ControllerBase
         return CreatedAtAction(nameof(GetAll), new { id = entry.Id }, new TimesheetEntryDto {
             Id = entry.Id,
             Date = entry.Date,
+            StartTime = entry.StartTime,
+            EndTime = entry.EndTime,
+            BreakTime = entry.BreakTime,
             Hours = entry.Hours,
             Description = entry.Description,
             WeeklyTimesheetId = entry.WeeklyTimesheetId
@@ -116,7 +129,10 @@ public class TimesheetEntriesController : ControllerBase
         }
 
         entry.Date = dto.Date;
-        entry.Hours = dto.Hours;
+        entry.StartTime = dto.StartTime;
+        entry.EndTime = dto.EndTime;
+        entry.BreakTime = dto.BreakTime;
+        entry.Hours = entry.CalculateHours();
         entry.Description = dto.Description;
         
         await _db.SaveChangesAsync();

@@ -4,6 +4,7 @@
   import { onMounted } from 'vue'
   import type { TimesheetEntry } from '../types/timesheet'
   import { useRoute, useRouter } from 'vue-router'
+  import { computed } from 'vue'
 
   const route = useRoute()
   const router = useRouter()
@@ -14,28 +15,56 @@
   const today = new Date().toISOString().split('T')[0]
   const entry = ref ({
     date: today,
-    hours: 0,
+    startTime: '09:00',
+    endTime: '17:00',
+    breakTime: '0',
     description: '',
   } as TimesheetEntry)
+
+  const calculatedHours = computed(() => {
+    const start = entry.value.startTime
+    const end = entry.value.endTime
+    const breakMins = Number(entry.value.breakTime) || 0
+
+    if (!start || !end) return 0
+
+    const [startH, startM] = start.split(':').map(Number)
+    const [endH, endM] = end.split(':').map(Number)
+
+    const startMinutes = startH * 60 + startM
+    const endMInutes = endH * 60 + endM
+
+    const workedMinutes = endMInutes - startMinutes - breakMins
+
+    return Math.round((workedMinutes / 60) * 10) / 10
+
+    
+  })
+
   const errors = ref({
     date: '',
-    hours: '',
+    startTime: '',
+    endTime: '',
+    breakTime: '',
     description: '',
   })
 
   function validate(): boolean {
     let isValid = true
 
-    errors.value = { date: '', hours: '', description: '' }
+    errors.value = { date: '', startTime: '', endTime: '', breakTime: '', description: '' }
     if ( !entry.value.date ) {
       errors.value.date = "Date is required"
       isValid = false
     }
-    if ( isNaN(entry.value.hours) || entry.value.hours <= 0 ) {
-      errors.value.hours = "Invalid no. hours"
+    if ( entry.value.startTime > entry.value.endTime ) {
+      errors.value.startTime = "Start time must be earlier than end time"
       isValid = false
     }
-
+    if (!Number(entry.value.breakTime)) {
+      errors.value.breakTime = "Invalid break time entry"
+      isValid = false
+    }
     if ( !entry.value.description ) {
       errors.value.description = "Description must not be empty"
       isValid = false
@@ -93,13 +122,27 @@
       <span class="text-red-500 text-sm">{{ errors.date }}</span>
     </div>
     <div>
+      <label>Start Time</label>
+      <input v-model="entry.startTime" @input="errors.startTime=''" type="time"/>
+      <span class="text-red-500 text-sm">{{ errors.startTime }}</span>
+    </div>
+    <div>
+      <label>End Time</label>
+      <input v-model="entry.endTime" @input="errors.endTime=''" type="time"/>
+      <span class="text-red-500 text-sm">{{ errors.endTime }}</span>
+    </div>
+    <div>
+      <label>Break</label>
+      <input v-model="entry.breakTime" @input="errors.breakTime=''" type="text"/>
+      <span class="text-red-500 text-sm">{{ errors.breakTime }}</span>
+    </div>
+    <div class="text-black">
       <label>Hours</label>
-      <input v-model="entry.hours" @input="errors.hours=''" type="text" placeholder="Enter no. hours"/>
-      <span class="text-red-500 text-sm">{{ errors.hours }}</span>
+      {{ calculatedHours }}
     </div>
     <div>
       <label>Description</label>
-      <input v-model="entry.description" @input="errors.description=''" type="text" placeholder="Describe what you've done"/>
+      <textarea v-model="entry.description" @input="errors.description=''" rows="3" placeholder="Describe what you've done"></textarea>
       <span class="text-red-500 text-sm">{{ errors.description }}</span>
     </div>
     <button type="button" class="bg-black text-white m-1 p-2" :disabled="saving" @click.prevent="submit">{{ saving ? 'Saving...' : 'Submit' }}</button>
