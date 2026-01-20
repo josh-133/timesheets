@@ -6,6 +6,7 @@ export interface TimesheetEntry {
     breakTime: string
     hours: number
     description: string
+    weeklyTimesheetId: number
 }
 
 export interface WeeklyTimesheet {

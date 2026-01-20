@@ -90,13 +90,16 @@
   async function submit() {
     if (validate()) {
       saving.value = true
-      try {
+      try {        
+        let weeklyTimesheetId: number           
         if (isCreate) {
-          await createTimesheetEntry(entry.value)
+          const created = await createTimesheetEntry(entry.value)                                
+          weeklyTimesheetId = created.weeklyTimesheetId                                          
         } else {
-          await updateTimesheetEntry(entry.value.id, entry.value)
-        }
-        router.push('/')
+          await updateTimesheetEntry(entry.value.id, entry.value)                                
+          weeklyTimesheetId = entry.value.weeklyTimesheetId                                      
+        }       
+        router.push(`/week/${weeklyTimesheetId}`)  
       } catch (e) {
           error.value = 'Failed to save entry. Please try again.'
       } finally {

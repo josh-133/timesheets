@@ -28,6 +28,7 @@ export async function createTimesheetEntry(data: any) {
     if (!res.ok) {
         throw new Error('Failed to create timesheet entry')
     }
+    return res.json()
 }
 
 export async function updateTimesheetEntry(id: number, data: any) {
